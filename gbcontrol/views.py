@@ -3,23 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import SensorData
 import json
 from datetime import timedelta
-import cv2
-from django.http import StreamingHttpResponse
 
-def gen_frames():  
-    camera = cv2.VideoCapture(0)  # Use 0 para a primeira webcam conectada
-    while True:
-        success, frame = camera.read()  
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # Concatena os quadros do vídeo
-
-def video_stream(request):
-    return StreamingHttpResponse(gen_frames(), content_type='multipart/x-mixed-replace; boundary=frame')
 
 @csrf_exempt
 def sensor_view(request):

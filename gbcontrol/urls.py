@@ -19,6 +19,5 @@ from django.urls import path, include
 from . import views
 urlpatterns = [
     path('', views.sensor_view, name='medicao'),
-    path('video_stream/', views.video_stream, name='video_stream'),
 
 ]
