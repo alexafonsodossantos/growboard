@@ -15,14 +15,62 @@
     <div style="width:600px;">
         <canvas id="humidityChart"></canvas>
     </div>
+    <h3>Temperatura: <span id="temp"></span>°C</h3>
+    <h3>Umidade relativa: <span id="umi"></span>%</h3>
+    <h3>Tempo ciclo: <span id="tciclo"></span></h3>
+    <h3>Tempo total: <span id="ttotal"></span></h3>
+    <h3>Lampada: <span id="lampada"></span></h3>
+
     <script src="https://cdnjs.com/libraries/Chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        function converterSegundosPorExtenso(segundos) {
+            let semanas = Math.floor(segundos / (7 * 24 * 3600));
+            let dias = Math.floor((segundos % (7 * 24 * 3600)) / (24 * 3600));
+            let horas = Math.floor((segundos % (24 * 3600)) / 3600);
+            let minutos = Math.floor((segundos % 3600) / 60);
+            let segundosRestantes = segundos % 60;
+
+            let resultado = "";
+
+            if (semanas > 0) {
+                resultado += semanas + " semana(s), ";
+            }
+
+            if (dias > 0) {
+                resultado += dias + " dia(s), ";
+            }
+
+            if (horas > 0) {
+                resultado += horas + " hora(s), ";
+            }
+
+            if (minutos > 0) {
+                resultado += minutos + " minuto(s), ";
+            }
+
+            if (segundosRestantes > 0) {
+                resultado += segundosRestantes + " segundo(s)";
+            }
+
+            return resultado;
+        }
+
         // Dados das leituras
         fetch('/sensor/').then(response => response.json()).then((response)=>{
             const readings = response;
             console.log(readings)
+
+            let lastReading = response[response.length - 1];
+            console.log(lastReading)
+            document.querySelector("#temp").innerHTML = lastReading.temperatura;
+            document.querySelector("#umi").innerHTML = lastReading.umidade;
+            document.querySelector("#tciclo").innerHTML = lastReading.tempo_ciclo;
+            document.querySelector("#lampada").innerHTML = lastReading.lampada ? 'ON' : 'OFF';
+
+
+
             const labels = readings.map(reading => reading.data_hora);
         const temperatureData = readings.map(reading => reading.temperatura);
         const humidityData = readings.map(reading => reading.umidade);
@@ -68,6 +116,7 @@
                 }
             }
         });
+
         })
         // Extraindo os dados necessários
         
