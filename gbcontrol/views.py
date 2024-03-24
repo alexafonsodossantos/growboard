@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import SensorData
 import json
 from datetime import timedelta
+from django.views.generic import TemplateView
 
 
 @csrf_exempt
@@ -29,3 +30,7 @@ def sensor_view(request):
     elif request.method == 'GET':
         medicoes = list(SensorData.objects.all().order_by('-data_hora')[:100].values())
         return JsonResponse(medicoes, safe=False)
+
+
+class IndexView(TemplateView):
+    template_name = 'index.html'  # Caminho para o template HTML
